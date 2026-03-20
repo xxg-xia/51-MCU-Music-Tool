@@ -1,0 +1,154 @@
+C51 COMPILER V9.54   MAIN                                                                  03/20/2026 17:35:36 PAGE 1   
+
+
+C51 COMPILER V9.54, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include <Delay.h>
+   3          #include <Timer0.h>
+   4          
+   5          sbit Buzzer = P2^5;
+   6          
+   7          // 定义两个全局变量，用来实时更新定时器初值
+   8          unsigned char Freq_TH;
+   9          unsigned char Freq_TL;
+  10          
+  11          // 这里粘贴 Python 脚本生成的数组
+  12          unsigned char code Music_Data[] = {
+  13                 0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  14              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  15              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  16              0xFB, 0x04, 207,  // M5, 392Hz, 207ms
+  17              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  18              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  19              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  20              0xFD, 0x09, 414,  // H3, 659Hz, 414ms
+  21              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  22              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  23              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  24              0xFB, 0x04, 207,  // M5, 392Hz, 207ms
+  25              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  26              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  27              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  28              0xFC, 0x44, 414,  // H1, 523Hz, 414ms
+  29              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  30              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  31              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  32              0xFB, 0x04, 207,  // M5, 392Hz, 207ms
+  33              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  34              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  35              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  36              0xFD, 0x09, 414,  // H3, 659Hz, 414ms
+  37              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  38              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  39              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  40              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  41              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  42              0xFB, 0x04, 207,  // M5, 392Hz, 207ms
+  43              0xFB, 0x90, 414,  // M6, 440Hz, 414ms
+  44              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  45              0xFD, 0x09, 103,  // H3, 659Hz, 103ms
+  46              0xFD, 0x09, 103,  // H3, 659Hz, 103ms
+  47              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  48              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  49              0xFD, 0x82, 207,  // H5, 784Hz, 207ms
+  50              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  51              0xFC, 0xAC, 414,  // H2, 587Hz, 414ms
+  52              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  53              0xFD, 0x09, 103,  // H3, 659Hz, 103ms
+  54              0xFD, 0x09, 103,  // H3, 659Hz, 103ms
+C51 COMPILER V9.54   MAIN                                                                  03/20/2026 17:35:36 PAGE 2   
+
+  55              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  56              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  57              0xFD, 0x82, 207,  // H5, 784Hz, 207ms
+  58              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  59              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  60              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  61              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  62              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  63              0xFB, 0x90, 103,  // M6, 440Hz, 103ms
+  64              0xFB, 0x04, 207,  // M5, 392Hz, 207ms
+  65              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  66              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  67              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  68              0xFD, 0x09, 414,  // H3, 659Hz, 414ms
+  69              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  70              0xFD, 0x09, 207,  // H3, 659Hz, 207ms
+  71              0xFC, 0xAC, 207,  // H2, 587Hz, 207ms
+  72              0xFC, 0x44, 207,  // H1, 523Hz, 207ms
+  73              0xFB, 0x90, 207,  // M6, 440Hz, 207ms
+  74              0xFB, 0x04, 207,  // M5, 392Hz, 207ms
+  75              0xFB, 0x90, 414,  // M6, 440Hz, 414ms
+  76              0x00, 0x00, 414,  // 0, 休止符, 414ms
+  77              0xFF, 0xFF, 0   // 结束标志
+  78          };
+  79          
+  80          void main()
+  81          {
+  82   1          unsigned int i = 0; // 数组索引
+  83   1          Timer0_Init();
+  84   1          
+  85   1          while(1)
+  86   1          {
+  87   2              // 如果遇到 0xFF，说明播放结束了，停在这里
+  88   2              if(Music_Data[i] == 0xFF)
+  89   2              {
+  90   3                  TR0 = 0; // 关闭定时器
+  91   3                  while(1); // 停机死循环（或者你可以让 i=0 重新播放）
+  92   3              }
+  93   2              
+  94   2              // 读取定时器初值
+  95   2              Freq_TH = Music_Data[i];
+  96   2              Freq_TL = Music_Data[i+1];
+  97   2              
+  98   2              // 如果 TH 和 TL 都是 0，说明是休止符，关闭定时器不发声
+  99   2              if(Freq_TH == 0x00 && Freq_TL == 0x00)
+ 100   2              {
+ 101   3                  TR0 = 0; 
+ 102   3              }
+ 103   2              else
+ 104   2              {
+ 105   3                  TR0 = 1; // 开启定时器发声
+ 106   3              }
+ 107   2              
+ 108   2              // 延时对应的毫秒数 (数组的第三个元素)
+ 109   2              Delay(Music_Data[i+2]);
+ 110   2              
+ 111   2              // 播放完一个音符后，稍微停顿一下（比如延时 5ms），让音符之间有颗粒�
+             -��
+ 112   2              TR0 = 0;
+ 113   2              Buzzer = 0; // 让蜂鸣器引脚复位，防止漏电发热
+ 114   2              Delay(5);
+ 115   2              
+C51 COMPILER V9.54   MAIN                                                                  03/20/2026 17:35:36 PAGE 3   
+
+ 116   2              i += 3; // 移动到下一个音符的数据
+ 117   2          }
+ 118   1      }
+ 119          
+ 120          void Timer0_Routine() interrupt 1
+ 121          {
+ 122   1          TH0 = Freq_TH; 
+ 123   1          TL0 = Freq_TL; 
+ 124   1          Buzzer = !Buzzer;
+ 125   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    115    ----
+   CONSTANT SIZE    =    195    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
